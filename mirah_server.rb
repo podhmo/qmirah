@@ -1,8 +1,17 @@
 require 'socket'
+
+def with_conf
+  $conf ||= (require 'yaml'; YAML.load_file("setting.yaml"))
+  yield($conf)
+end
+
 begin
   require 'mirah'
 rescue LoadError
-  $: << File.dirname(__FILE__)+"/workarea/mirah/lib"
+  with_conf do |conf|
+    dir = conf["mirah_lib"] || File.dirname(__FILE__)+"/workarea/mirah/lib"
+    $: << dir
+  end
   require 'mirah'
 end
 
@@ -13,18 +22,17 @@ class DubyImpl
   end
 end
 
-duby = DubyImpl.new
-
-def duby.doaction(str)
-  cmd, *args = str.split(" ")
-  begin
-    send(cmd.to_sym, *args)
-  rescue NoMethodError
-    send(:print_help)
+module Duby
+  def self.doaction(str)
+    cmd, *args = str.split(" ")
+    begin
+      send(cmd.to_sym, *args)
+    rescue NoMethodError
+      DubyImpl.new.print_help
+    end
   end
 end
 
-require 'socket'
 def with_server(name,port)
   TCPServer.open(name,port) do |s|
     STDERR.puts "Listening with #{port} ..."
@@ -34,10 +42,12 @@ def with_server(name,port)
   end
 end
 
-with_server('localhost', "44444") do |s|
+port = ARGV.first || with_conf{|c| c["port"]}
+
+with_server('localhost', port) do |s|
   loop do
     Thread.start(s.accept) do |cl|
-      duby.doaction cl.gets.chomp.tap{|e| STDERR.puts "recv: #{e}"}
+      Duby.doaction cl.gets.chomp.tap{|e| STDERR.puts "recv: #{e}"}
       cl.close
     end
   end

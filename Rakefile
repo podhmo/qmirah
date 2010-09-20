@@ -1,4 +1,3 @@
-
 desc "install"
 task :install do
   require 'erb'
