@@ -15,10 +15,11 @@ rescue LoadError
   require 'mirah'
 end
 
+class ExitException < StandardError; end
 ## monkey patching
 class DubyImpl
   def exit(n)
-    raise "exit with status #{n}"
+    raise ExitException, "exit with status #{n}"
   end
 end
 
@@ -29,6 +30,9 @@ module Duby
       send(cmd.to_sym, *args)
     rescue NoMethodError
       DubyImpl.new.print_help
+    rescue ExitException
+    rescue
+      puts [$!,$@]
     end
   end
 end
@@ -52,5 +56,3 @@ with_server('localhost', port) do |s|
     end
   end
 end
-
-
