@@ -1,0 +1,19 @@
+#!/bin/sh
+port=44444
+jruby=/home/nao/sandbox/mirah/workarea/jruby/bin/jruby
+
+lsof -i:$port | grep java
+
+if [ $? -ne 0 ]; then
+    echo "standup qmirahc server..."
+    $jruby a.rb &
+    lsof -i:$port | grep java
+    while [ $? -ne 0 ]; do
+        sleep 1
+        lsof -i:$port | grep java
+    done
+fi
+
+nc localhost $port <<EOF
+compile -d `pwd` $@
+EOF
