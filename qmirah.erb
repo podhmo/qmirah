@@ -1,7 +1,7 @@
 #!/bin/sh
 
-port=44444
-jruby=/home/nao/sandbox/mirah/workarea/jruby/bin/jruby
+port=<%= CONF["port"] %>
+jruby=<%= CONF["jruby"] %>
 
 lsof -i:$port | grep java 2>&1 1>/dev/null
 if [ $? -ne 0 ]; then
@@ -10,10 +10,10 @@ if [ $? -ne 0 ]; then
     lsof -i:$port | grep java 2>&1 1>/dev/null
     while [ $? -ne 0 ]; do
         sleep 1
-        lsof -i:$port | grep java
+        lsof -i:$port | grep java 2>&1 1>/dev/null
     done
 fi
 
 nc localhost $port <<EOF
-compile -d `pwd` $@
+<%= CONF["command"] %> -d `pwd` $@
 EOF
