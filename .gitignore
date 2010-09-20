@@ -1,3 +1,5 @@
 workarea/*
 qmirah
 qmirahc
+*.class
+*.java
