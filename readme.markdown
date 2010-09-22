@@ -14,8 +14,10 @@ it depends below.
 
 install
 ------
+install <a href="http://www.mirah.org/">mirah</a>, after that
+clone this repository.
 
-    $ vi setting.yaml
+    $ vi setting.yaml # edit file
     $ rake install
 
 
