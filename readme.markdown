@@ -37,5 +37,5 @@ toy-benchmarking
 
     $ time ./qmirah examples/hello.mirah               
     ./qmirah examples/hello.mirah  0.01s user 0.02s system 100% cpu 0.030 total
-    $ recv: run -d /home/nao/sandbox/qmirah examples/hello.mirahx/qmirah]
+    $ recv: run -d ~/sandbox/qmirah examples/hello.mirahx/qmirah
     hello
