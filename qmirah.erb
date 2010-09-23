@@ -15,5 +15,5 @@ if [ $? -ne 0 ]; then
 fi
 
 nc localhost $port <<EOF
-<%= CONF["command"] %> -d `pwd` $@
+<%= CONF["command"] %> --cd `pwd` $@
 EOF

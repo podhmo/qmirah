@@ -45,7 +45,6 @@ def with_server(name,port)
     STDERR.puts "...End"
   end
 end
-
 port = ARGV.first || with_conf{|c| c["port"]}
 
 with_server('localhost', port) do |s|
